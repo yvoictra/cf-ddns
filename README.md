@@ -1,4 +1,4 @@
-# Cloudflare Dynamic DNS Updater
+# Cloudflare Dynamic DNS Updater (cf-ddns)
 
 Script ligero en Bash para actualizar automáticamente registros DNS de tipo `A` en Cloudflare cuando cambia la IP pública, con notificaciones y alertas de error mediante Telegram y registro en `syslog`.
 
@@ -27,8 +27,8 @@ sudo apt update && sudo apt install -y curl jq dnsutils
 
 1. **Clona el repositorio:**
    ```bash
-   git clone [https://github.com/yvoictra/dynamic_dns_cloudflare.git](https://github.com/yvoictra/dynamic_dns_cloudflare.git)
-   cd dynamic_dns_cloudflare
+   git clone https://github.com/yvoictra/cf-ddns.git
+   cd cf-ddns
    ```
 
 2. **Configura las variables de Telegram:**
@@ -48,7 +48,7 @@ sudo apt update && sudo apt install -y curl jq dnsutils
 
 3. **Da permisos de ejecución al script:**
    ```bash
-   chmod +x update_dns.sh
+   chmod +x cf-ddns.sh
    ```
 
 ## Uso y ejecución de parámetros
@@ -56,7 +56,7 @@ sudo apt update && sudo apt install -y curl jq dnsutils
 El script requiere **3 parámetros posicionales obligatorios** en este orden exacto:
 
 ```bash
-./update_dns.sh <API_TOKEN> <ZONE_ID> <RECORD_NAME>
+./cf-ddns.sh <API_TOKEN> <ZONE_ID> <RECORD_NAME>
 ```
 
 ### Descripción de los parámetros
@@ -73,12 +73,12 @@ El script requiere **3 parámetros posicionales obligatorios** en este orden exa
 
 **Actualizar un subdominio:**
 ```bash
-./update_dns.sh "cf_token_ejemplo_12345" "023e105f4ecef8ad9ca31a8372d0c353" "casa.tudominio.com"
+./cf-ddns.sh "cf_token_ejemplo_12345" "023e105f4ecef8ad9ca31a8372d0c353" "casa.tudominio.com"
 ```
 
 **Actualizar el dominio raíz (`@`):**
 ```bash
-./update_dns.sh "cf_token_ejemplo_12345" "023e105f4ecef8ad9ca31a8372d0c353" "tudominio.com"
+./cf-ddns.sh "cf_token_ejemplo_12345" "023e105f4ecef8ad9ca31a8372d0c353" "tudominio.com"
 ```
 
 ## Automatización con Cron
@@ -86,7 +86,7 @@ El script requiere **3 parámetros posicionales obligatorios** en este orden exa
 Para ejecutar la comprobación cada 5 minutos, edita el crontab (`crontab -e`) y añade una línea por cada registro que quieras mantener actualizado:
 
 ```cron
-*/5 * * * * /ruta/completa/dynamic_dns_cloudflare/update_dns.sh "TU_API_TOKEN" "TU_ZONE_ID" "casa.tudominio.com" >/dev/null 2>&1
+*/5 * * * * /ruta/completa/cf-ddns/cf-ddns.sh "TU_API_TOKEN" "TU_ZONE_ID" "casa.tudominio.com" >/dev/null 2>&1
 ```
 
 *(No es necesario pasar variables de entorno en `cron`, ya que el script localiza y carga automáticamente el archivo `.env` situado en su mismo directorio).*
@@ -101,3 +101,4 @@ grep "ddns-cloudflare" /var/log/syslog
 
 # Seguir logs en tiempo real con systemd/journald
 journalctl -t ddns-cloudflare -f
+```
